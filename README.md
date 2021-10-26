@@ -1,6 +1,6 @@
 # Notes sur le travail réalisé
 
-Visualisation de données sur la répartion femmes/hommes au sein de l'INP.
+Visualisation de données sur la répartion femmes/hommes au sein de l'INP : https://github.com/ALDonzel/donneesINP/blob/main/analyseINP.docx.
 
 Le travail est réalisé sur la base d’un scrapping des données de l’annuaire de l’INP.
 
