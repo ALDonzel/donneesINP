@@ -1,0 +1,171 @@
+---
+title: "Analyse données INP"
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+  pdf_document: default
+  word_document: default
+---
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(readxl)
+```
+
+# Notes
+
+Le travail est réalisé sur la base d'un scrapping des données de [l'annuaire de l'INP](https://ent.inp.fr/mod/data/view.php?id=3227).
+
+Le fichier a été nettoyé :
+
+* Les élèves internationaux n'ont pas été conservés
+
+* Suppression de doublons (femmes apparaissant sous leur nom de jeune fille puis sous le nom d'épouse)
+
+* Le sexe a été ajouté manuellement (vérification par recherche soit sur l'annuaire, soit sur un moteur de recherche en cas de doute)
+
+* Les spécialités ont été harmonisées
+
+* Diverses coquilles et erreurs ont été corrigées (nom des promo)
+
+# Nombre de personne par spécialités
+
+
+```{r}
+data <- read_excel(path = "annuaireINP_complet.xls")
+data %>%
+  count(Spécialité, name= "Nombre") %>%
+  ggplot( aes(x=Spécialité, y=Nombre)) +
+  geom_bar(stat = "identity", width = 0.5, fill = "azure3")
+
+```
+
+# Nombre de femmes et d'hommes toutes spécialités confondues
+
+```{r}
+data <- read_excel(path = "annuaireINP_complet.xls")
+data %>% 
+  count(Sexe, name= "Nombre") %>%
+  ggplot(aes(x=Sexe, y=Nombre)) +
+  geom_bar(stat = "identity", width = 0.5, fill = "azure3")
+```
+
+# Répartition femmes/hommes par spécialité
+
+```{r}
+ ggplot(data,aes(as.factor(Spécialité), fill=as.factor(Sexe)))+
+        geom_bar(position = "dodge") +
+        labs(
+          x = "Spécialité",
+          y = "Nombre",
+          colour = "Sexe"
+        ) +
+        scale_fill_manual(values=c('#BCCC9A','#C37B89')) +
+        theme_minimal()
+```
+
+# Evolution de la répartition femmes/hommes dans le temps
+
+
+```{r}
+promo <- read_excel(path = "annuaireINP_complet.xls")
+promo %>%
+  group_by(Année) %>% 
+  count(Sexe, name = "Nombre") %>% 
+  ggplot(aes(x = Année, y = Nombre, color = Sexe)) +
+    geom_line() +
+    scale_color_manual(values=c('#BCCC9A','#C37B89')) +
+    theme_minimal()
+  
+
+```
+
+# Répartition par spécialité
+
+## Archéologie
+
+```{r}
+data <- read_excel(path = "annuaireINP_complet.xls")
+data %>%
+  filter(Spécialité == "Archéologie") %>% 
+  count(Sexe, name = "Nombre")
+
+```
+
+## Archives
+
+```{r}
+data <- read_excel(path = "annuaireINP_complet.xls")
+data %>%
+  filter(Spécialité == "Archives") %>% 
+  count(Sexe, name = "Nombre")
+
+```
+## Autre carrière
+
+```{r}
+data <- read_excel(path = "annuaireINP_complet.xls")
+data %>%
+  filter(Spécialité == "Autre carrière") %>% 
+  count(Sexe, name = "Nombre")
+
+```
+
+## MHI
+
+```{r}
+data <- read_excel(path = "annuaireINP_complet.xls")
+data %>%
+  filter(Spécialité == "MHI") %>% 
+  count(Sexe, name = "Nombre")
+
+```
+
+## Musées
+
+```{r}
+data <- read_excel(path = "annuaireINP_complet.xls")
+data %>%
+  filter(Spécialité == "Musées") %>% 
+  count(Sexe, name = "Nombre")
+
+```
+
+## PSTN
+
+```{r}
+data <- read_excel(path = "annuaireINP_complet.xls")
+data %>%
+  filter(Spécialité == "PSTN") %>% 
+  count(Sexe, name = "Nombre")
+```
+
+## Evolution dans le temps et par spécialité
+
+```{r}
+data <- read_excel(path = "annuaireINP_complet.xls")
+facettes <- data %>%
+  group_by(Spécialité, Année) %>% 
+  count(Sexe)
+
+facettes
+
+```
+```{r}
+ggplot(data = facettes, mapping = aes(x = Année, y = n, color = Sexe)) +
+  geom_line() +
+  facet_wrap(facets =  vars(Spécialité)) +
+  scale_color_manual(values=c('#BCCC9A','#C37B89')) +
+  labs(
+          x = "Année",
+          y = "Nombre",
+          colour = "Sexe"
+        ) +
+  theme_light()
+```
+
+
+
+
