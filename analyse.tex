@@ -36,7 +36,7 @@
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \hypersetup{
-  pdftitle={R Notebook},
+  pdftitle={Analyse données INP},
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 \urlstyle{same} % disable monospaced font for URLs
@@ -99,7 +99,7 @@
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \setcounter{secnumdepth}{-\maxdimen} % remove section numbering
 
-\title{R Notebook}
+\title{Analyse données INP}
 \author{}
 \date{\vspace{-2.5em}}
 
@@ -136,6 +136,30 @@
 \end{Highlighting}
 \end{Shaded}
 
+\hypertarget{notes}{%
+\section{Notes}\label{notes}}
+
+Le travail est réalisé sur la base d'un scrapping des données de
+\href{https://ent.inp.fr/mod/data/view.php?id=3227}{l'annuaire de
+l'INP}.
+
+Le fichier a été nettoyé :
+
+\begin{itemize}
+\item
+  Les élèves internationaux n'ont pas été conservés
+\item
+  Suppression de doublons (femmes apparaissant sous leur nom de jeune
+  fille puis sous le nom d'épouse)
+\item
+  Le sexe a été ajouté manuellement (vérification par recherche soit sur
+  l'annuaire, soit sur un moteur de recherche en cas de doute)
+\item
+  Les spécialités ont été harmonisées
+\item
+  Diverses coquilles et erreurs ont été corrigées (nom des promo)
+\end{itemize}
+
 \hypertarget{nombre-de-personne-par-spuxe9cialituxe9s}{%
 \section{Nombre de personne par
 spécialités}\label{nombre-de-personne-par-spuxe9cialituxe9s}}
@@ -144,41 +168,68 @@ spécialités}\label{nombre-de-personne-par-spuxe9cialituxe9s}}
 \begin{Highlighting}[]
 \NormalTok{data \textless{}{-}}\StringTok{ }\KeywordTok{read\_excel}\NormalTok{(}\DataTypeTok{path =} \StringTok{"annuaireINP\_complet.xls"}\NormalTok{)}
 \NormalTok{data }\OperatorTok{\%\textgreater{}\%}
-\StringTok{  }\KeywordTok{count}\NormalTok{(Spécialité, }\DataTypeTok{name=} \StringTok{"Nombre"}\NormalTok{)}
+\StringTok{  }\KeywordTok{count}\NormalTok{(Spécialité, }\DataTypeTok{name=} \StringTok{"Nombre"}\NormalTok{) }\OperatorTok{\%\textgreater{}\%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{( }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{Spécialité, }\DataTypeTok{y=}\NormalTok{Nombre)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom\_bar}\NormalTok{(}\DataTypeTok{stat =} \StringTok{"identity"}\NormalTok{, }\DataTypeTok{width =} \FloatTok{0.5}\NormalTok{, }\DataTypeTok{fill =} \StringTok{"azure3"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-## # A tibble: 6 x 2
-##   Spécialité     Nombre
-##   <chr>           <int>
-## 1 Archéologie       137
-## 2 Archives          283
-## 3 Autre carrière     13
-## 4 MHI               180
-## 5 Musées            472
-## 6 PSTN               43
-\end{verbatim}
+\includegraphics{analyse_files/figure-latex/unnamed-chunk-2-1.pdf}
 
-\hypertarget{nombre-de-femmes-et-dhommes-quelque-soit-la-spuxe9cialituxe9}{%
-\section{Nombre de femmes et d'hommes quelque soit la
-spécialité}\label{nombre-de-femmes-et-dhommes-quelque-soit-la-spuxe9cialituxe9}}
+\hypertarget{nombre-de-femmes-et-dhommes-toutes-spuxe9cialituxe9s-confondues}{%
+\section{Nombre de femmes et d'hommes toutes spécialités
+confondues}\label{nombre-de-femmes-et-dhommes-toutes-spuxe9cialituxe9s-confondues}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{data \textless{}{-}}\StringTok{ }\KeywordTok{read\_excel}\NormalTok{(}\DataTypeTok{path =} \StringTok{"annuaireINP\_complet.xls"}\NormalTok{)}
 \NormalTok{data }\OperatorTok{\%\textgreater{}\%}\StringTok{ }
-\StringTok{  }\KeywordTok{count}\NormalTok{ (Sexe, }\DataTypeTok{name=} \StringTok{"Nombre"}\NormalTok{)}
+\StringTok{  }\KeywordTok{count}\NormalTok{(Sexe, }\DataTypeTok{name=} \StringTok{"Nombre"}\NormalTok{) }\OperatorTok{\%\textgreater{}\%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{Sexe, }\DataTypeTok{y=}\NormalTok{Nombre)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom\_bar}\NormalTok{(}\DataTypeTok{stat =} \StringTok{"identity"}\NormalTok{, }\DataTypeTok{width =} \FloatTok{0.5}\NormalTok{, }\DataTypeTok{fill =} \StringTok{"azure3"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-## # A tibble: 2 x 2
-##   Sexe  Nombre
-##   <chr>  <int>
-## 1 F        691
-## 2 H        437
-\end{verbatim}
+\includegraphics{analyse_files/figure-latex/unnamed-chunk-3-1.pdf}
+
+\hypertarget{ruxe9partition-femmeshommes-par-spuxe9cialituxe9}{%
+\section{Répartition femmes/hommes par
+spécialité}\label{ruxe9partition-femmeshommes-par-spuxe9cialituxe9}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+ \KeywordTok{ggplot}\NormalTok{(data,}\KeywordTok{aes}\NormalTok{(}\KeywordTok{as.factor}\NormalTok{(Spécialité), }\DataTypeTok{fill=}\KeywordTok{as.factor}\NormalTok{(Sexe)))}\OperatorTok{+}
+\StringTok{        }\KeywordTok{geom\_bar}\NormalTok{(}\DataTypeTok{position =} \StringTok{"dodge"}\NormalTok{) }\OperatorTok{+}
+\StringTok{        }\KeywordTok{labs}\NormalTok{(}
+          \DataTypeTok{x =} \StringTok{"Spécialité"}\NormalTok{,}
+          \DataTypeTok{y =} \StringTok{"Nombre"}\NormalTok{,}
+          \DataTypeTok{colour =} \StringTok{"Sexe"}
+\NormalTok{        ) }\OperatorTok{+}
+\StringTok{        }\KeywordTok{scale\_fill\_manual}\NormalTok{(}\DataTypeTok{values=}\KeywordTok{c}\NormalTok{(}\StringTok{\textquotesingle{}\#BCCC9A\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}\#C37B89\textquotesingle{}}\NormalTok{)) }\OperatorTok{+}
+\StringTok{        }\KeywordTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{analyse_files/figure-latex/unnamed-chunk-4-1.pdf}
+
+\hypertarget{evolution-de-la-ruxe9partition-femmeshommes-dans-le-temps}{%
+\section{Evolution de la répartition femmes/hommes dans le
+temps}\label{evolution-de-la-ruxe9partition-femmeshommes-dans-le-temps}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{promo \textless{}{-}}\StringTok{ }\KeywordTok{read\_excel}\NormalTok{(}\DataTypeTok{path =} \StringTok{"annuaireINP\_complet.xls"}\NormalTok{)}
+\NormalTok{promo }\OperatorTok{\%\textgreater{}\%}
+\StringTok{  }\KeywordTok{group\_by}\NormalTok{(Année) }\OperatorTok{\%\textgreater{}\%}\StringTok{ }
+\StringTok{  }\KeywordTok{count}\NormalTok{(Sexe, }\DataTypeTok{name =} \StringTok{"Nombre"}\NormalTok{) }\OperatorTok{\%\textgreater{}\%}\StringTok{ }
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ Année, }\DataTypeTok{y =}\NormalTok{ Nombre, }\DataTypeTok{color =}\NormalTok{ Sexe)) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom\_line}\NormalTok{() }\OperatorTok{+}
+\StringTok{    }\KeywordTok{scale\_color\_manual}\NormalTok{(}\DataTypeTok{values=}\KeywordTok{c}\NormalTok{(}\StringTok{\textquotesingle{}\#BCCC9A\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}\#C37B89\textquotesingle{}}\NormalTok{)) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{analyse_files/figure-latex/unnamed-chunk-5-1.pdf}
 
 \hypertarget{ruxe9partition-par-spuxe9cialituxe9}{%
 \section{Répartition par
@@ -223,6 +274,9 @@ spécialité}\label{ruxe9partition-par-spuxe9cialituxe9}}
 ## 1 F        160
 ## 2 H        123
 \end{verbatim}
+
+\hypertarget{autre-carriuxe8re}{%
+\subsection{Autre carrière}\label{autre-carriuxe8re}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -300,5 +354,55 @@ spécialité}\label{ruxe9partition-par-spuxe9cialituxe9}}
 ## 1 F         26
 ## 2 H         17
 \end{verbatim}
+
+\hypertarget{evolution-dans-le-temps-et-par-spuxe9cialituxe9}{%
+\subsection{Evolution dans le temps et par
+spécialité}\label{evolution-dans-le-temps-et-par-spuxe9cialituxe9}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data \textless{}{-}}\StringTok{ }\KeywordTok{read\_excel}\NormalTok{(}\DataTypeTok{path =} \StringTok{"annuaireINP\_complet.xls"}\NormalTok{)}
+\NormalTok{facettes \textless{}{-}}\StringTok{ }\NormalTok{data }\OperatorTok{\%\textgreater{}\%}
+\StringTok{  }\KeywordTok{group\_by}\NormalTok{(Spécialité, Année) }\OperatorTok{\%\textgreater{}\%}\StringTok{ }
+\StringTok{  }\KeywordTok{count}\NormalTok{(Sexe)}
+
+\NormalTok{facettes}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 267 x 4
+## # Groups:   Spécialité, Année [147]
+##    Spécialité  Année Sexe      n
+##    <chr>       <dbl> <chr> <int>
+##  1 Archéologie  1991 H         2
+##  2 Archéologie  1992 H         2
+##  3 Archéologie  1993 F         1
+##  4 Archéologie  1993 H         2
+##  5 Archéologie  1994 H         1
+##  6 Archéologie  1995 H         3
+##  7 Archéologie  1996 F         2
+##  8 Archéologie  1996 H         5
+##  9 Archéologie  1997 F         2
+## 10 Archéologie  1997 H         1
+## # ... with 257 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ facettes, }\DataTypeTok{mapping =} \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ Année, }\DataTypeTok{y =}\NormalTok{ n, }\DataTypeTok{color =}\NormalTok{ Sexe)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom\_line}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet\_wrap}\NormalTok{(}\DataTypeTok{facets =}  \KeywordTok{vars}\NormalTok{(Spécialité)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale\_color\_manual}\NormalTok{(}\DataTypeTok{values=}\KeywordTok{c}\NormalTok{(}\StringTok{\textquotesingle{}\#BCCC9A\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}\#C37B89\textquotesingle{}}\NormalTok{)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}
+          \DataTypeTok{x =} \StringTok{"Année"}\NormalTok{,}
+          \DataTypeTok{y =} \StringTok{"Nombre"}\NormalTok{,}
+          \DataTypeTok{colour =} \StringTok{"Sexe"}
+\NormalTok{        ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme\_light}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{analyse_files/figure-latex/unnamed-chunk-13-1.pdf}
 
 \end{document}

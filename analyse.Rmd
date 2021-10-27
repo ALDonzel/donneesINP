@@ -22,7 +22,7 @@ Le fichier a été nettoyé :
 
 * Les élèves internationaux n'ont pas été conservés
 
-* Suppression de doublons (femmes apparaissant sous leur nom de jeune fille puis sous le nom d'épouse)
+* Suppression de doublons (femmes apparaissant sous leur nom de jeune fille puis sous leur nom d'épouse)
 
 * Le sexe a été ajouté manuellement (vérification par recherche soit sur l'annuaire, soit sur un moteur de recherche en cas de doute)
 
